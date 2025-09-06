@@ -3,7 +3,17 @@
   "name": "TalkScribe",
   "version": "1.0.0",
   "description": "Text input made easy with your voice.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "contextMenus"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["contentScript.js"],
+      "css": ["style.css"]
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   }
