@@ -1,21 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Voice to Text</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
-    textarea { width: 100%; height: 100px; }
-    button { margin-top: 10px; padding: 10px 20px; font-size: 16px; }
-  </style>
+    <meta charset="UTF-8">
+    <title>TalkScribe Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            min-width: 300px;
+            max-width: 400px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #444;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+        .highlight {
+            font-weight: bold;
+            color: #222;
+        }
+    </style>
 </head>
 <body>
-  <h2>Voice to Text</h2>
-  <textarea id="transcript" placeholder="Your speech will appear here..."></textarea>
-  <br />
-  <button id="start">Start</button>
-  <button id="stop" disabled>Stop</button>
-
-  <script src="popup.js"></script>
+    <h2>How to Use TalkScribe</h2>
+    <ul>
+        <li>Click in any text field where you want to type.</li>
+        <li>Right-click and select <strong>Start Dictation</strong>.</li>
+        <li>Speak clearly into your microphone.</li>
+        <li>Your words will appear automatically in the text field.</li>
+        <li>Click 
+            <span style="background-color: #B22222; padding: 4px 8px; border-radius: 20px; color: white;display: inline-flex; align-items: center; gap: 4px; font-size: 12px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12C2.25 6.61522 6.61522 2.25 12 2.25C17.3848 2.25 21.75 6.61522 21.75 12C21.75 17.3848 17.3848 21.75 12 21.75C6.61522 21.75 2.25 17.3848 2.25 12ZM8.25 9.5625C8.25 8.83763 8.83763 8.25 9.5625 8.25H14.4375C15.1624 8.25 15.75 8.83763 15.75 9.5625V14.4375C15.75 15.1624 15.1624 15.75 14.4375 15.75H9.5625C8.83763 15.75 8.25 15.1624 8.25 14.4375V9.5625Z" fill="#ffffff"/>
+              </svg>
+              Stop Dictation
+            </span>
+             when you are done.</li>
+        <li>Make sure your microphone is turned on and allowed in Chrome.</li>
+    </ul>
+    <div class="note">
+        TalkScribe makes typing faster by converting your voice into text.
+    </div>
 </body>
 </html>

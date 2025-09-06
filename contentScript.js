@@ -41,8 +41,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
         document.body.appendChild(stopBtn);
 
-        speechRecognition = new webkitSpeechRecognition();
-        speechRecognition.lang = navigator.language;
+        speechRecognition = new webkitSpeechRecognition() || new SpeechRecognition();
+        speechRecognition.lang = navigator.language || 'en-US';
         speechRecognition.interimResults = true;
         speechRecognition.continuous = true;
         //let lastInterimTranscript = '';
