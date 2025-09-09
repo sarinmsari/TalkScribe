@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "TalkScribe - Dictate Anywhere",
   "version": "1.0.0",
-  "description": "Text input made easy with your voice.",
-  "permissions": ["activeTab", "scripting", "contextMenus"],
+  "description": "Texting made easy with your voice.",
+  "permissions": ["activeTab","contextMenus"],
   "background": {
     "service_worker": "background.js"
   },

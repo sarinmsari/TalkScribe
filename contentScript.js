@@ -1,13 +1,37 @@
 let speechRecognition = null;
+let shouldRestart = true;
+let lastResponseTime = Date.now();
+
+// Create a stop button
 const stopBtn = document.createElement('button');
+stopBtn.className = 'stop-recording-button';
+stopBtn.innerHTML = `
+    <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right:8px;" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12C2.25 6.61522 6.61522 2.25 12 2.25C17.3848 2.25 21.75 6.61522 21.75 12C21.75 17.3848 17.3848 21.75 12 21.75C6.61522 21.75 2.25 17.3848 2.25 12ZM8.25 9.5625C8.25 8.83763 8.83763 8.25 9.5625 8.25H14.4375C15.1624 8.25 15.75 8.83763 15.75 9.5625V14.4375C15.75 15.1624 15.1624 15.75 14.4375 15.75H9.5625C8.83763 15.75 8.25 15.1624 8.25 14.4375V9.5625Z" fill="#ffffff"/>
+    </svg>
+    Stop Dictation
+`;
+
+// create a live transcript div
+const liveTranscriptDiv = document.createElement('div');
+liveTranscriptDiv.className = 'live-transcript';
+
+// Create a container for the button and live transcript
+let dictationContainer = document.createElement('div');
+dictationContainer.className = 'dictation-container';
+dictationContainer.appendChild(stopBtn);
+dictationContainer.appendChild(liveTranscriptDiv);
+
 
 const endDictation = () => {
-    if (!speechRecognition) return;
+    shouldRestart = false;
 
-    speechRecognition.stop();
-    if (stopBtn.parentNode) {
-        stopBtn.parentNode.removeChild(stopBtn);
+    if (dictationContainer.parentNode) {
+        dictationContainer.parentNode.removeChild(dictationContainer);
     }
+    
+    speechRecognition?.stop();
+
     // Trigger context menu title change
     chrome.runtime.sendMessage({
         action: "updateContextMenu",
@@ -30,16 +54,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             return;
         }
 
-        // Create a stop button and append to body or suitable location
-        stopBtn.className = 'stop-recording-button';
-        stopBtn.innerHTML = `
-            <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right:8px;" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M2.25 12C2.25 6.61522 6.61522 2.25 12 2.25C17.3848 2.25 21.75 6.61522 21.75 12C21.75 17.3848 17.3848 21.75 12 21.75C6.61522 21.75 2.25 17.3848 2.25 12ZM8.25 9.5625C8.25 8.83763 8.83763 8.25 9.5625 8.25H14.4375C15.1624 8.25 15.75 8.83763 15.75 9.5625V14.4375C15.75 15.1624 15.1624 15.75 14.4375 15.75H9.5625C8.83763 15.75 8.25 15.1624 8.25 14.4375V9.5625Z" fill="#ffffff"/>
-            </svg>
-            Stop Dictation
-        `;
-
-        document.body.appendChild(stopBtn);
+        document.body.appendChild(dictationContainer);
 
         speechRecognition = new webkitSpeechRecognition() || new SpeechRecognition();
         speechRecognition.lang = navigator.language || 'en-US';
@@ -63,11 +78,31 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
             if (delta) {
                 simulateTyping(delta);
             }
-            lastInterimTranscript = interimTranscript; */
+            lastInterimTranscript = interimTranscript;*/
+
+            if(interimTranscript.length){
+                liveTranscriptDiv.style.display = 'block';
+                liveTranscriptDiv.textContent = interimTranscript;
+                lastResponseTime = Date.now();
+            }
 
             if (finalTranscript) {
                 simulateTyping(finalTranscript);
+                liveTranscriptDiv.textContent = '';
+                liveTranscriptDiv.style.display = 'none';
             }
+        }
+
+        speechRecognition.onend = () => {
+            const now = Date.now();
+            // If no response for 30 seconds or end triggered, assume user stopped speaking and end dictation
+            if (now - lastResponseTime > 30000 || !shouldRestart) {
+                endDictation();
+                return;
+            }
+
+            // Auto-restart to avoid unexpected stops
+            speechRecognition.start();
         }
         
         speechRecognition.onerror = (event) => {
